@@ -2,6 +2,7 @@ package com.anuj.app.api;
 
 import io.smallrye.mutiny.Uni;
 import io.vertx.ext.web.client.WebClient;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -9,20 +10,20 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+
 @Path("/weather")
-public class WeatherApi {
+public class WeatherAPI {
 
-    private final WebClient client;
+    @Inject
+    WebClient client;
 
-    public WeatherResource(Vercatx vertx) {
-        this.client = WebClient.create(vertx);
-    }
+    private static final String API_URL = "https://api.openweathermap.org/data/2.5/weather";
+    private static final String API_KEY = "your_api_key_here"; // Replace with your actual API key
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> getWeather(@QueryParam("city") String city) {
-        String apiKey = "your_api_key_here";
-        String url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
+        String url = API_URL + "?q=" + city + "&appid=" + API_KEY + "&units=metric";
 
         return client
                 .getAbs(url)
